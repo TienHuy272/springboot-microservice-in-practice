@@ -1,5 +1,12 @@
 package hnt.api.core.product;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
+@AllArgsConstructor
 public class Product {
   private final int productId;
   private final String name;
@@ -11,28 +18,5 @@ public class Product {
     name = null;
     weight = 0;
     serviceAddress = null;
-  }
-
-  public Product(int productId, String name, int weight, String serviceAddress) {
-    this.productId = productId;
-    this.name = name;
-    this.weight = weight;
-    this.serviceAddress = serviceAddress;
-  }
-
-  public int getProductId() {
-    return productId;
-  }
-
-  public String getName() {
-    return name;
-  }
-
-  public int getWeight() {
-    return weight;
-  }
-
-  public String getServiceAddress() {
-    return serviceAddress;
   }
 }
