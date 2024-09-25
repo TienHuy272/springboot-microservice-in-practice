@@ -1,19 +1,19 @@
 package hnt.api.composite.product;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.List;
 
 @Getter
 @Setter
+@NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class ProductAggregate {
-  private final int productId;
-  private final String name;
-  private final int weight;
-  private final List<RecommendationSummary> recommendations;
-  private final List<ReviewSummary> reviews;
-  private final ServiceAddresses serviceAddresses;
+  private int productId;
+  private String name;
+  private int weight;
+  private List<RecommendationSummary> recommendations;
+  private List<ReviewSummary> reviews;
+  private ServiceAddresses serviceAddresses;
 }
