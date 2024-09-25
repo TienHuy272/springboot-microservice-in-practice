@@ -19,7 +19,7 @@ import org.springframework.data.mongodb.core.mapping.MongoPersistentEntity;
 import org.springframework.data.mongodb.core.mapping.MongoPersistentProperty;
 
 @SpringBootApplication
-@ComponentScan("hnt.microservices")
+@ComponentScan("hnt")
 public class ProductServiceApplication {
 
   private static final Logger LOG = LoggerFactory.getLogger(ProductServiceApplication.class);
