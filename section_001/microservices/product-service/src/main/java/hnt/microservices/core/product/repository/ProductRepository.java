@@ -1,6 +1,6 @@
 package hnt.microservices.core.product.repository;
 
-import hnt.microservices.core.product.enties.Product;
+import hnt.microservices.core.product.enties.ProductEntity;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;
@@ -8,6 +8,6 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 @Repository
-public interface ProductRepository extends PagingAndSortingRepository<Product, String>, CrudRepository<Product, String> {
-    Optional<Product> findByProductId(int productId);
+public interface ProductRepository extends PagingAndSortingRepository<ProductEntity, String>, CrudRepository<ProductEntity, String> {
+    Optional<ProductEntity> findByProductId(int productId);
 }

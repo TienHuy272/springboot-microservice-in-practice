@@ -13,7 +13,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Getter
 @Setter
 @NoArgsConstructor
-public class Product {
+public class ProductEntity {
     @Id
     private String id;
     @Version
@@ -23,7 +23,7 @@ public class Product {
     private String name;
     private int weight;
 
-    public Product(int productId, String name, int weight) {
+    public ProductEntity(int productId, String name, int weight) {
         this.productId = productId;
         this.name = name;
         this.weight = weight;

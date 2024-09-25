@@ -13,7 +13,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Getter
 @Setter
 @NoArgsConstructor
-public class Recommendation {
+public class RecommendationEntity {
     @Id
     private String id;
     @Version
@@ -24,7 +24,7 @@ public class Recommendation {
     private int rating;
     private String content;
 
-    public Recommendation(int productId, int recommendationId, String author, int rating, String content) {
+    public RecommendationEntity(int productId, int recommendationId, String author, int rating, String content) {
         this.productId = productId;
         this.recommendationId = recommendationId;
         this.author = author;
