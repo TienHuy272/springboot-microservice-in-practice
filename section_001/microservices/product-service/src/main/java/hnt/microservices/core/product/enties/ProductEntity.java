@@ -14,10 +14,8 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Setter
 @NoArgsConstructor
 public class ProductEntity {
-    @Id
-    private String id;
-    @Version
-    private Integer version;
+    @Id private String id;
+    @Version private Integer version;
     @Indexed(unique = true)
     private int productId;
     private String name;
