@@ -49,6 +49,8 @@ dependencies {
     testImplementation 'io.projectreactor:reactor-test'
 
     implementation 'org.springframework.cloud:spring-cloud-stream:4.0.4'
+    implementation 'org.springframework.cloud:spring-cloud-starter-stream-rabbit'
+    implementation 'org.springframework.cloud:spring-cloud-starter-stream-kafka'
 }
 
 tasks.named('test') {
