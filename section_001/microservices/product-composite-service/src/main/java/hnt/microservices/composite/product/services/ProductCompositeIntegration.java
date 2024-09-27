@@ -1,26 +1,35 @@
 package hnt.microservices.composite.product.services;
 
-import static org.springframework.http.HttpMethod.GET;
+import static java.util.logging.Level.FINE;
+import static reactor.core.publisher.Flux.empty;
+import static hnt.api.event.Event.Type.CREATE;
+import static hnt.api.event.Event.Type.DELETE;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.boot.actuate.health.Health;
+import org.springframework.cloud.stream.function.StreamBridge;
 import org.springframework.http.HttpStatus;
+import org.springframework.messaging.Message;
+import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.stereotype.Component;
-import org.springframework.web.client.HttpClientErrorException;
-import org.springframework.web.client.RestTemplate;
+import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
+import reactor.core.scheduler.Scheduler;
 import hnt.api.core.product.Product;
 import hnt.api.core.product.ProductService;
 import hnt.api.core.recommendation.Recommendation;
 import hnt.api.core.recommendation.RecommendationService;
 import hnt.api.core.review.Review;
 import hnt.api.core.review.ReviewService;
+import hnt.api.event.Event;
 import hnt.api.exceptions.InvalidInputException;
 import hnt.api.exceptions.NotFoundException;
 import hnt.util.http.HttpErrorInfo;
@@ -30,16 +39,19 @@ public class ProductCompositeIntegration implements ProductService, Recommendati
 
   private static final Logger LOG = LoggerFactory.getLogger(ProductCompositeIntegration.class);
 
-  private final RestTemplate restTemplate;
+  private final WebClient webClient;
   private final ObjectMapper mapper;
 
   private final String productServiceUrl;
   private final String recommendationServiceUrl;
   private final String reviewServiceUrl;
 
+  private final StreamBridge streamBridge;
+
+  private final Scheduler publishEventScheduler;
+
   @Autowired
-  public ProductCompositeIntegration(
-          @Qualifier("publishEventScheduler") Scheduler publishEventScheduler,
+  public ProductCompositeIntegration(@Qualifier("publishEventScheduler") Scheduler publishEventScheduler,
 
           WebClient.Builder webClient,
           ObjectMapper mapper,
