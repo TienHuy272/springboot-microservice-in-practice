@@ -1,5 +1,7 @@
 package hnt.microservices.core.product.services;
 
+import static java.util.logging.Level.FINE;
+
 import hnt.microservices.core.product.enties.ProductEntity;
 import hnt.microservices.core.product.mapper.ProductMapper;
 import hnt.microservices.core.product.repository.ProductRepository;
@@ -8,32 +10,34 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.web.bind.annotation.RestController;
+import reactor.core.publisher.Mono;
 import hnt.api.core.product.Product;
 import hnt.api.core.product.ProductService;
 import hnt.api.exceptions.InvalidInputException;
 import hnt.api.exceptions.NotFoundException;
 import hnt.util.http.ServiceUtil;
-import reactor.core.publisher.Mono;
-
-import static java.util.logging.Level.FINE;
 
 @RestController
 public class ProductServiceImpl implements ProductService {
 
   private static final Logger LOG = LoggerFactory.getLogger(ProductServiceImpl.class);
+
   private final ServiceUtil serviceUtil;
+
   private final ProductRepository repository;
+
   private final ProductMapper mapper;
 
   @Autowired
-  public ProductServiceImpl(ServiceUtil serviceUtil, ProductMapper mapper, ProductRepository productRepository) {
-    this.serviceUtil = serviceUtil;
-    this.repository = productRepository;
+  public ProductServiceImpl(ProductRepository repository, ProductMapper mapper, ServiceUtil serviceUtil) {
+    this.repository = repository;
     this.mapper = mapper;
+    this.serviceUtil = serviceUtil;
   }
 
   @Override
   public Mono<Product> createProduct(Product body) {
+
     if (body.getProductId() < 1) {
       throw new InvalidInputException("Invalid productId: " + body.getProductId());
     }
@@ -45,6 +49,7 @@ public class ProductServiceImpl implements ProductService {
                     DuplicateKeyException.class,
                     ex -> new InvalidInputException("Duplicate key, Product Id: " + body.getProductId()))
             .map(e -> mapper.entityToApi(e));
+
     return newEntity;
   }
 
@@ -64,11 +69,6 @@ public class ProductServiceImpl implements ProductService {
             .map(e -> setServiceAddress(e));
   }
 
-  private Product setServiceAddress(Product e) {
-    e.setServiceAddress(serviceUtil.getServiceAddress());
-    return e;
-  }
-
   @Override
   public Mono<Void> deleteProduct(int productId) {
 
@@ -80,4 +80,8 @@ public class ProductServiceImpl implements ProductService {
     return repository.findByProductId(productId).log(LOG.getName(), FINE).map(e -> repository.delete(e)).flatMap(e -> e);
   }
 
+  private Product setServiceAddress(Product e) {
+    e.setServiceAddress(serviceUtil.getServiceAddress());
+    return e;
+  }
 }

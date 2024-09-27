@@ -21,19 +21,14 @@ ext {
 
 dependencies {
     implementation platform("org.springframework.boot:spring-boot-dependencies:${springBootVersion}")
-    implementation 'org.springdoc:springdoc-openapi-starter-common:2.0.2'
     implementation 'org.springframework.boot:spring-boot-starter-webflux'
+    implementation 'org.springdoc:springdoc-openapi-starter-common:2.0.2'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
     compileOnly 'org.projectlombok:lombok:1.18.28'
     annotationProcessor 'org.projectlombok:lombok:1.18.28'
-    // Optional: Lombok MapStruct Binding
     compileOnly 'org.projectlombok:lombok-mapstruct-binding:0.2.0'
     annotationProcessor 'org.projectlombok:lombok-mapstruct-binding:0.2.0'
-    implementation "org.mapstruct:mapstruct:${mapstructVersion}"
-    annotationProcessor "org.mapstruct:mapstruct-processor:${mapstructVersion}"
-    testAnnotationProcessor "org.mapstruct:mapstruct-processor:${mapstructVersion}"
-    compileOnly "org.mapstruct:mapstruct-processor:${mapstructVersion}"
-    implementation 'org.springframework.boot:spring-boot-starter-data-mongodb-reactive'
 }
 
 tasks.named('test') {
