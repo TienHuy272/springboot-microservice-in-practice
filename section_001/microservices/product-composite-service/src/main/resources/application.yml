@@ -68,13 +68,13 @@ server.error.include-message: always
 app:
   product-service:
     host: localhost
-    port: 7001
+    port: 9091
   recommendation-service:
     host: localhost
-    port: 7002
+    port: 9092
   review-service:
     host: localhost
-    port: 7003
+    port: 9093
 
 spring.cloud.stream:
   defaultBinder: rabbit
