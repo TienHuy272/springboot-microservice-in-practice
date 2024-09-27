@@ -1,5 +1,7 @@
 package hnt.microservices.core.review.services;
 
+import static java.util.logging.Level.FINE;
+
 import java.util.List;
 
 import hnt.microservices.core.review.entities.ReviewEntity;
@@ -11,15 +13,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.web.bind.annotation.RestController;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
+import reactor.core.scheduler.Scheduler;
 import hnt.api.core.review.Review;
 import hnt.api.core.review.ReviewService;
 import hnt.api.exceptions.InvalidInputException;
 import hnt.util.http.ServiceUtil;
-import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
-import reactor.core.scheduler.Scheduler;
-
-import static java.util.logging.Level.FINE;
 
 @RestController
 public class ReviewServiceImpl implements ReviewService {
@@ -35,8 +35,7 @@ public class ReviewServiceImpl implements ReviewService {
   private final Scheduler jdbcScheduler;
 
   @Autowired
-  public ReviewServiceImpl(
- Scheduler jdbcScheduler, ReviewRepository repository, ReviewMapper mapper, ServiceUtil serviceUtil) {
+  public ReviewServiceImpl(@Qualifier("jdbcScheduler") Scheduler jdbcScheduler, ReviewRepository repository, ReviewMapper mapper, ServiceUtil serviceUtil) {
     this.jdbcScheduler = jdbcScheduler;
     this.repository = repository;
     this.mapper = mapper;
