@@ -65,17 +65,6 @@ api:
 server.port: 9090
 server.error.include-message: always
 
-app:
-  product-service:
-    host: localhost
-    port: 9091
-  recommendation-service:
-    host: localhost
-    port: 9092
-  review-service:
-    host: localhost
-    port: 9093
-
 spring.cloud.stream:
   defaultBinder: rabbit
   default.contentType: application/json
