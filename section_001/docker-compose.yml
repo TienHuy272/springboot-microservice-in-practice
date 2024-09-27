@@ -27,6 +27,17 @@ services:
       interval: 5s
       timeout: 2s
       retries: 60
+  rabbitmq:
+    image: rabbitmq:3.11.8-management
+    mem_limit: 512m
+    ports:
+      - 5672:5672
+      - 15672:15672
+    healthcheck:
+      test: ["CMD", "rabbitmqctl", "status"]
+      interval: 5s
+      timeout: 2s
+      retries: 60
 
   product:
     build: microservices/product-service
@@ -35,6 +46,8 @@ services:
       - SPRING_PROFILES_ACTIVE=docker
     depends_on:
       mongodb:
+        condition: service_healthy
+      rabbitmq:
         condition: service_healthy
 
   recommendation:
@@ -45,6 +58,8 @@ services:
     depends_on:
       mongodb:
         condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
 
   review:
     build: microservices/review-service
@@ -53,6 +68,8 @@ services:
       - SPRING_PROFILES_ACTIVE=docker
     depends_on:
       mysql:
+        condition: service_healthy
+      rabbitmq:
         condition: service_healthy
 
   product-composite:
