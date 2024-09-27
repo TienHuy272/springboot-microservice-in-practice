@@ -35,7 +35,8 @@ public class ReviewServiceImpl implements ReviewService {
   private final Scheduler jdbcScheduler;
 
   @Autowired
-  public ReviewServiceImpl(@Qualifier("jdbcScheduler") Scheduler jdbcScheduler, ReviewRepository repository, ReviewMapper mapper, ServiceUtil serviceUtil) {
+  public ReviewServiceImpl(
+ Scheduler jdbcScheduler, ReviewRepository repository, ReviewMapper mapper, ServiceUtil serviceUtil) {
     this.jdbcScheduler = jdbcScheduler;
     this.repository = repository;
     this.mapper = mapper;
