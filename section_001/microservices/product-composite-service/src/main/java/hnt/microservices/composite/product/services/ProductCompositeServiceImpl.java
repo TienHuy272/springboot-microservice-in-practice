@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.RestController;
 import hnt.api.core.product.Product;
 import hnt.api.core.recommendation.Recommendation;
 import hnt.api.core.review.Review;
-import hnt.api.exceptions.NotFoundException;
 import hnt.util.http.ServiceUtil;
 import reactor.core.publisher.Mono;
 
@@ -75,7 +74,10 @@ public class ProductCompositeServiceImpl implements ProductCompositeService {
 
     LOG.info("Will get composite product info for product.id={}", productId);
     return Mono.zip(
-                    values -> createProductAggregate((Product) values[0], (List<Recommendation>) values[1], (List<Review>) values[2], serviceUtil.getServiceAddress()),
+                    values -> createProductAggregate((Product) values[0],
+                              (List<Recommendation>) values[1],
+                              (List<Review>) values[2],
+                              serviceUtil.getServiceAddress()),
                     integration.getProduct(productId),
                     integration.getRecommendations(productId).collectList(),
                     integration.getReviews(productId).collectList())
@@ -104,7 +106,10 @@ public class ProductCompositeServiceImpl implements ProductCompositeService {
     }
   }
 
-  private ProductAggregate createProductAggregate(Product product, List<Recommendation> recommendations, List<Review> reviews, String serviceAddress) {
+  private ProductAggregate createProductAggregate(Product product,
+                                                  List<Recommendation> recommendations,
+                                                  List<Review> reviews,
+                                                  String serviceAddress) {
 
     // 1. Setup product info
     int productId = product.getProductId();
