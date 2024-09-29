@@ -38,16 +38,14 @@ public class ProductCompositeIntegration implements ProductService, Recommendati
 
   private static final Logger LOG = LoggerFactory.getLogger(ProductCompositeIntegration.class);
 
-  private final WebClient webClient;
-  private final ObjectMapper mapper;
-
   private static final String PRODUCT_SERVICE_URL = "http://product";
   private static final String RECOMMENDATION_SERVICE_URL = "http://recommendation";
   private static final String REVIEW_SERVICE_URL = "http://review";
 
-  private final StreamBridge streamBridge;
-
   private final Scheduler publishEventScheduler;
+  private final WebClient webClient;
+  private final ObjectMapper mapper;
+  private final StreamBridge streamBridge;
 
   @Autowired
   public ProductCompositeIntegration(
@@ -56,9 +54,9 @@ public class ProductCompositeIntegration implements ProductService, Recommendati
           ObjectMapper mapper,
           StreamBridge streamBridge
   ) {
+    this.webClient = webClientBuilder.build();
 
     this.publishEventScheduler = publishEventScheduler;
-    this.webClient = webClientBuilder.build();
     this.mapper = mapper;
     this.streamBridge = streamBridge;
   }
@@ -139,27 +137,6 @@ public class ProductCompositeIntegration implements ProductService, Recommendati
 
     return Mono.fromRunnable(() -> sendMessage("reviews-out-0", new Event(DELETE, productId, null)))
             .subscribeOn(publishEventScheduler).then();
-  }
-
-  public Mono<Health> getProductHealth() {
-    return getHealth(PRODUCT_SERVICE_URL);
-  }
-
-  public Mono<Health> getRecommendationHealth() {
-    return getHealth(RECOMMENDATION_SERVICE_URL);
-  }
-
-  public Mono<Health> getReviewHealth() {
-    return getHealth(REVIEW_SERVICE_URL);
-  }
-
-  private Mono<Health> getHealth(String url) {
-    url += "/actuator/health";
-    LOG.debug("Will call the Health API on URL: {}", url);
-    return webClient.get().uri(url).retrieve().bodyToMono(String.class)
-            .map(s -> new Health.Builder().up().build())
-            .onErrorResume(ex -> Mono.just(new Health.Builder().down(ex).build()))
-            .log(LOG.getName(), FINE);
   }
 
   private void sendMessage(String bindingName, Event event) {
