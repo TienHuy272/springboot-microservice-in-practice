@@ -1,0 +1,4 @@
+
+spring:
+  quartz:
+    scheduler-name: gateway

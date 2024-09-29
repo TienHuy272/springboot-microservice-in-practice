@@ -3,6 +3,9 @@ springdoc:
   api-docs.path: /openapi/v3/api-docs
   packagesToScan: hnt.microservices.composite.product
   pathsToMatch: /**
+  cache.disabled: true
+
+server.forward-headers-strategy: framework
 
 api:
 
@@ -64,7 +67,21 @@ api:
 
 server.port: 9090
 server.error.include-message: always
+
 spring.application.name: product-composite
+
+app.eureka-server: localhost
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://${app.eureka-server}:8761/eureka/
+    initialInstanceInfoReplicationIntervalSeconds: 5
+    registryFetchIntervalSeconds: 5
+  instance:
+    leaseRenewalIntervalInSeconds: 5
+    leaseExpirationDurationInSeconds: 5
+
 spring.cloud.stream:
   defaultBinder: rabbit
   default.contentType: application/json
@@ -99,32 +116,12 @@ logging:
 
 management.endpoint.health.show-details: "ALWAYS"
 management.endpoints.web.exposure.include: "*"
-
-eureka:
-  client:
-    serviceUrl:
-      defaultZone: http://localhost:8761/eureka/
-    initialInstanceInfoReplicationIntervalSeconds: 5
-    registryFetchIntervalSeconds: 5
-  instance:
-    leaseRenewalIntervalInSeconds: 5
-    leaseExpirationDurationInSeconds: 5
-
 ---
 spring.config.activate.on-profile: docker
-eureka.client.serviceUrl.defaultZone: http://eureka:8761/eureka/
+
 server.port: 8080
 
-app:
-  product-service:
-    host: product
-    port: 8080
-  recommendation-service:
-    host: recommendation
-    port: 8080
-  review-service:
-    host: review
-    port: 8080
+app.eureka-server: eureka
 
 spring.rabbitmq.host: rabbitmq
 
