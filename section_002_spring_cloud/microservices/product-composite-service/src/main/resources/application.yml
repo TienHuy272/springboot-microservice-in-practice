@@ -5,6 +5,16 @@ springdoc:
   pathsToMatch: /**
   cache.disabled: true
 
+  swagger-ui:
+    oauth2-redirect-url: /swagger-ui/oauth2-redirect.html
+    oauth:
+      clientId: writer
+      clientSecret: secret-writer
+      useBasicAuthenticationWithAccessCodeGrant: true
+    oAuthFlow:
+      authorizationUrl: https://localhost:8443/oauth2/authorize
+      tokenUrl: https://localhost:8443/oauth2/token
+
 server.forward-headers-strategy: framework
 
 api:
@@ -74,6 +84,7 @@ app:
   eureka-username: u
   eureka-password: p
   eureka-server: localhost
+  auth-server: localhost
 
 eureka:
   client:
@@ -117,17 +128,16 @@ logging:
     root: INFO
     hnt: DEBUG
 
+spring.security.oauth2.resourceserver.jwt.issuer-uri: http://${app.auth-server}:9999
 management.endpoint.health.show-details: "ALWAYS"
 management.endpoints.web.exposure.include: "*"
 ---
 spring.config.activate.on-profile: docker
-
 server.port: 8080
-
-app.eureka-server: eureka
-
+app:
+  auth-server: auth-server
+  eureka-server: eureka
 spring.rabbitmq.host: rabbitmq
-
 spring.cloud.stream.kafka.binder.brokers: kafka
 
 ---
