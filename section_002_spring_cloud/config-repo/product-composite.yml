@@ -122,8 +122,8 @@ resilience4j.circuitbreaker:
       permittedNumberOfCallsInHalfOpenState: 3
       automaticTransitionFromOpenToHalfOpenEnabled: true
       ignoreExceptions:
-        - se.magnus.api.exceptions.InvalidInputException
-        - se.magnus.api.exceptions.NotFoundException
+        - hnt.api.exceptions.InvalidInputException
+        - hnt.api.exceptions.NotFoundException
 logging:
   level:
     root: INFO
