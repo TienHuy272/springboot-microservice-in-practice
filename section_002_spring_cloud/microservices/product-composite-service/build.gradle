@@ -23,6 +23,10 @@ ext {
     resilience4jVersion = "2.0.2"
 }
 
+springBoot {
+    buildInfo()
+}
+
 dependencies {
     implementation project(':api')
     implementation project(':util')
