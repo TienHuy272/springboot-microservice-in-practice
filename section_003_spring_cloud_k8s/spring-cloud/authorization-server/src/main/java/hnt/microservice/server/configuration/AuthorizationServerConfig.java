@@ -72,34 +72,34 @@ public class AuthorizationServerConfig {
     // OAuth2AuthorizationServerConfiguration.applyDefaultSecurity(http);
 
     OAuth2AuthorizationServerConfigurer authorizationServerConfigurer =
-      new OAuth2AuthorizationServerConfigurer();
+            new OAuth2AuthorizationServerConfigurer();
 
     // Register a custom redirect_uri validator, that allows redirect uris based on https://localhost during development
     authorizationServerConfigurer
-      .authorizationEndpoint(authorizationEndpoint ->
-        authorizationEndpoint
-          .authenticationProviders(configureAuthenticationValidator())
-      );
+            .authorizationEndpoint(authorizationEndpoint ->
+                    authorizationEndpoint
+                            .authenticationProviders(configureAuthenticationValidator())
+            );
 
     RequestMatcher endpointsMatcher = authorizationServerConfigurer
-      .getEndpointsMatcher();
+            .getEndpointsMatcher();
 
     http
-      .securityMatcher(endpointsMatcher)
-      .authorizeHttpRequests(authorize ->
-        authorize.anyRequest().authenticated()
-      )
-      .csrf(csrf -> csrf.ignoringRequestMatchers(endpointsMatcher))
-      .apply(authorizationServerConfigurer);
+            .securityMatcher(endpointsMatcher)
+            .authorizeHttpRequests(authorize ->
+                    authorize.anyRequest().authenticated()
+            )
+            .csrf(csrf -> csrf.ignoringRequestMatchers(endpointsMatcher))
+            .apply(authorizationServerConfigurer);
 
     http.getConfigurer(OAuth2AuthorizationServerConfigurer.class)
-      .oidc(Customizer.withDefaults()); // Enable OpenID Connect 1.0
+            .oidc(Customizer.withDefaults()); // Enable OpenID Connect 1.0
 
     http
-      .exceptionHandling(exceptions ->
-        exceptions.authenticationEntryPoint(new LoginUrlAuthenticationEntryPoint("/login"))
-      )
-      .oauth2ResourceServer(OAuth2ResourceServerConfigurer::jwt);
+            .exceptionHandling(exceptions ->
+                    exceptions.authenticationEntryPoint(new LoginUrlAuthenticationEntryPoint("/login"))
+            )
+            .oauth2ResourceServer(OAuth2ResourceServerConfigurer::jwt);
 
     return http.build();
   }
@@ -107,35 +107,35 @@ public class AuthorizationServerConfig {
   @Bean
   public RegisteredClientRepository registeredClientRepository() {
     RegisteredClient writerClient = RegisteredClient.withId(UUID.randomUUID().toString())
-      .clientId("writer")
-      .clientSecret("{noop}secret-writer")
-      .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
-      .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
-      .authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN)
-      .authorizationGrantType(AuthorizationGrantType.CLIENT_CREDENTIALS)
-      .redirectUri("https://my.redirect.uri")
-      .redirectUri("https://localhost:8443/openapi/webjars/swagger-ui/oauth2-redirect.html")
-      .scope(OidcScopes.OPENID)
-      .scope("product:read")
-      .scope("product:write")
-      .clientSettings(ClientSettings.builder().requireAuthorizationConsent(true).build())
-      .tokenSettings(TokenSettings.builder().accessTokenTimeToLive(Duration.ofHours(1)).build())
-      .build();
+            .clientId("writer")
+            .clientSecret("{noop}secret-writer")
+            .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
+            .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
+            .authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN)
+            .authorizationGrantType(AuthorizationGrantType.CLIENT_CREDENTIALS)
+            .redirectUri("https://my.redirect.uri")
+            .redirectUri("https://localhost:8443/openapi/webjars/swagger-ui/oauth2-redirect.html")
+            .scope(OidcScopes.OPENID)
+            .scope("product:read")
+            .scope("product:write")
+            .clientSettings(ClientSettings.builder().requireAuthorizationConsent(true).build())
+            .tokenSettings(TokenSettings.builder().accessTokenTimeToLive(Duration.ofHours(1)).build())
+            .build();
 
     RegisteredClient readerClient = RegisteredClient.withId(UUID.randomUUID().toString())
-      .clientId("reader")
-      .clientSecret("{noop}secret-reader")
-      .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
-      .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
-      .authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN)
-      .authorizationGrantType(AuthorizationGrantType.CLIENT_CREDENTIALS)
-      .redirectUri("https://my.redirect.uri")
-      .redirectUri("https://localhost:8443/openapi/webjars/swagger-ui/oauth2-redirect.html")
-      .scope(OidcScopes.OPENID)
-      .scope("product:read")
-      .clientSettings(ClientSettings.builder().requireAuthorizationConsent(true).build())
-      .tokenSettings(TokenSettings.builder().accessTokenTimeToLive(Duration.ofHours(1)).build())
-      .build();
+            .clientId("reader")
+            .clientSecret("{noop}secret-reader")
+            .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
+            .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
+            .authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN)
+            .authorizationGrantType(AuthorizationGrantType.CLIENT_CREDENTIALS)
+            .redirectUri("https://my.redirect.uri")
+            .redirectUri("https://localhost:8443/openapi/webjars/swagger-ui/oauth2-redirect.html")
+            .scope(OidcScopes.OPENID)
+            .scope("product:read")
+            .clientSettings(ClientSettings.builder().requireAuthorizationConsent(true).build())
+            .tokenSettings(TokenSettings.builder().accessTokenTimeToLive(Duration.ofHours(1)).build())
+            .build();
 
     return new InMemoryRegisteredClientRepository(writerClient, readerClient);
 
@@ -155,23 +155,23 @@ public class AuthorizationServerConfig {
 
   @Bean
   public AuthorizationServerSettings authorizationServerSettings() {
-    return AuthorizationServerSettings.builder().issuer("http://auth-server:9999").build();
+    return AuthorizationServerSettings.builder().issuer("http://auth-server").build();
   }
 
   private Consumer<List<AuthenticationProvider>> configureAuthenticationValidator() {
     return (authenticationProviders) ->
-      authenticationProviders.forEach((authenticationProvider) -> {
-        if (authenticationProvider instanceof OAuth2AuthorizationCodeRequestAuthenticationProvider) {
-          Consumer<OAuth2AuthorizationCodeRequestAuthenticationContext> authenticationValidator =
-            // Override default redirect_uri validator
-            new CustomRedirectUriValidator()
-              // Reuse default scope validator
-              .andThen(OAuth2AuthorizationCodeRequestAuthenticationValidator.DEFAULT_SCOPE_VALIDATOR);
+            authenticationProviders.forEach((authenticationProvider) -> {
+              if (authenticationProvider instanceof OAuth2AuthorizationCodeRequestAuthenticationProvider) {
+                Consumer<OAuth2AuthorizationCodeRequestAuthenticationContext> authenticationValidator =
+                        // Override default redirect_uri validator
+                        new CustomRedirectUriValidator()
+                                // Reuse default scope validator
+                                .andThen(OAuth2AuthorizationCodeRequestAuthenticationValidator.DEFAULT_SCOPE_VALIDATOR);
 
-          ((OAuth2AuthorizationCodeRequestAuthenticationProvider) authenticationProvider)
-            .setAuthenticationValidator(authenticationValidator);
-        }
-      });
+                ((OAuth2AuthorizationCodeRequestAuthenticationProvider) authenticationProvider)
+                        .setAuthenticationValidator(authenticationValidator);
+              }
+            });
   }
 
   static class CustomRedirectUriValidator implements Consumer<OAuth2AuthorizationCodeRequestAuthenticationContext> {
@@ -179,7 +179,7 @@ public class AuthorizationServerConfig {
     @Override
     public void accept(OAuth2AuthorizationCodeRequestAuthenticationContext authenticationContext) {
       OAuth2AuthorizationCodeRequestAuthenticationToken authorizationCodeRequestAuthentication =
-        authenticationContext.getAuthentication();
+              authenticationContext.getAuthentication();
       RegisteredClient registeredClient = authenticationContext.getRegisteredClient();
       String requestedRedirectUri = authorizationCodeRequestAuthentication.getRedirectUri();
 
